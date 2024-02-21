@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste CORS</title>
+</head>
+
+<body>
+    <button onclick="obterVendas()">Buscar Vendas</button>
+    <br>
+    <br>
+    Lista de Vendas:
+    <ul id="listaVendas"></ul>
+
+    <script>
+        function obterVendas() {
+            const requestOptions = {
+                method: "GET",
+                redirect: "follow",
+                "Access-Control-Allow-Origin": "*"
+            };
+
+            fetch("http://localhost:5218/Sales", requestOptions)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Erro na requisição");
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    const listaVendas = document.getElementById("listaVendas");
+                    listaVendas.innerHTML = "";
+                    result.forEach(venda => {
+                        const listItem = document.createElement("li");
+                        listItem.textContent = `ID: ${venda.id}, Data da Venda: ${venda.saleDate}`;
+                        listaVendas.appendChild(listItem);
+                    });
+                })
+                .catch(error => {
+                    console.error("Erro ao obter vendas:", error);
+                    const listaVendas = document.getElementById("listaVendas");
+                    listaVendas.innerHTML = "<li>Erro ao obter vendas</li>";
+                });
+        }
+
+    </script>
+</body>
+
+</html>
